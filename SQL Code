@@ -1,0 +1,237 @@
+https://app.hex.tech/big-sql-energy/app/032j8DmSY3QpKL4rSX1Nxw/latest
+
+-- Exploration of Cancelation Data
+
+select 
+    * 
+from 
+    public.cancelations
+
+-- To confirm that the cancelation flow is requiring at least one reason so reason 1 should not have any null values 
+
+
+select 
+    * 
+from 
+    public.cancelations
+where cancelation_reason1 is null
+
+-- count number of times each reason is given as a first answer 
+
+select
+    coalesce(cancelation_reason1,'Not Answered') as first_cx_reason
+    ,count(*) as num_instances
+from 
+    public.cancelations
+group by
+    1
+order by
+    2 DESC
+
+-- count number of times each reason is given as a second answer 
+
+select
+    coalesce(cancelation_reason2,'Not Answered') as second_cx_reason
+    ,count(*) as num_instances
+from 
+    public.cancelations
+group by
+    1
+order by
+    2 DESC
+
+-- count number of times each reason is given as a third answer 
+
+select
+    coalesce(cancelation_reason1,'Not Answered') as third_cx_reason
+    ,count(*) as num_instances
+from 
+    public.cancelations
+group by
+    1
+order by
+    2 DESC
+
+-- How many reasons is the user willing to select
+
+
+select 
+    subscription_id
+    ,case when cancelation_reason1 is not null then 1 else 0 end as has_reason1
+    ,case when cancelation_reason2 is not null then 1 else 0 end as has_reason2
+    ,case when cancelation_reason3 is not null then 1 else 0 end as has_reason3
+    ,has_reason1 + has_reason2 + has_reason3 as total_reason
+    ,has_reason2 + has_reason3 as additional_reason
+from 
+    public.cancelations
+
+-- What is the average of all users
+
+with cancels as (
+select 
+    subscription_id
+    ,case when cancelation_reason1 is not null then 1 else 0 end as has_reason1
+    ,case when cancelation_reason2 is not null then 1 else 0 end as has_reason2
+    ,case when cancelation_reason3 is not null then 1 else 0 end as has_reason3
+    ,has_reason1 + has_reason2 + has_reason3 as total_reason
+    ,has_reason2 + has_reason3 as additional_reason
+from 
+    public.cancelations
+)
+
+select  
+    avg(total_reason) as avg_tot_reasons
+    ,avg(additional_reason) as avg_add_reasons
+from 
+    cancels
+
+-- Unpivot data for furtuer analysis
+
+select 
+    subscription_id
+    ,cancelation_reason1 as cancelation_reason
+from
+    public.cancelations
+
+union -- we do want to dedupe these lists incase a subscriber entered the same reason multiple times in the cancelation process and a union all would result in overcounting. 
+
+select
+    subscription_id
+    ,cancelation_reason2 as cancelation_reason
+from 
+    public.cancelations
+
+union
+
+select
+    subscription_id
+    ,cancelation_reason3 as cancelation_reason
+from 
+    public.cancelations
+
+-- -- Count total reasons across subscribers
+
+with reasons as (
+select 
+    subscription_id
+    ,cancelation_reason1 as cancelation_reason
+from
+    public.cancelations
+
+union -- we do want to dedupe these lists incase a subscriber entered the same reason multiple times in the cancelation process and a union all would result in overcounting. 
+
+select
+    subscription_id
+    ,cancelation_reason2 as cancelation_reason
+from 
+    public.cancelations
+
+union
+
+select
+    subscription_id
+    ,cancelation_reason3 as cancelation_reason
+from 
+    public.cancelations
+)
+
+select
+    cancelation_reason
+    ,count(*) as num_subs -- susbcription_ids are already deduped for the cancelation reason from the union above
+from 
+    reasons
+group by
+    1
+order by
+    2 Desc
+
+-- This unpivoted data will be useful for ongoing analysis with some additional data (i.e. cancel date, reason number, etc) so I will turn it into a view for future use 
+
+create or replace view junk.all_cancelation_reasons as
+select
+    subscription_id
+    ,cancel_date
+    ,1 as reason_number
+    ,cancelation_reason1 as cancelation_reason
+from
+    public.cancelations
+
+union 
+
+select
+    subscription_id
+    ,cancel_date
+    ,2 as reason_number
+    ,cancelation_reason2 as cancelation_reason
+from 
+    public.cancelations
+
+union
+
+select
+    subscription_id
+    ,cancel_date
+    ,3 as reason_number
+    ,cancelation_reason3 as cancelation_reason
+from 
+    public.cancelations
+
+
+-- a note of warning, the view will have some duplicates due to the addition of the cancelation reason number coloumn.  So moving forward additional deduping may be needed
+
+-- verify view created correctly. 
+
+select 
+    *
+from 
+    junk.all_cancelation_reasons
+
+-- count cancelation reasons across subscribers by reason number. Deduping note: This count keeps duplicates if a subscriber entered the same reason multiple times to track the counts over the three entry points.
+
+select
+    cancelation_reason
+    ,reason_number
+    ,count(*) as num_subs
+from 
+    junk.all_cancelation_reasons
+group by
+    1,2
+order by
+    1, 2
+
+-- Track reasons over time (annually)
+
+select 
+    date_trunc('year', cancel_date::date) as cancel_year
+    ,cancelation_reason
+    ,count(*) as num_reason
+from 
+    junk.all_cancelation_reasons
+group by
+    1,2
+order by
+    1
+
+-- calcuate each reason as a percentage of the total for the year
+
+with yearly as (
+select 
+    date_trunc('year', cancel_date::date) as cancel_year
+    ,cancelation_reason
+    ,count(*) as num_reason
+from
+    junk.all_cancelation_reasons
+group by
+    1,2
+order by
+    1
+)
+
+select  
+    cancel_year
+    ,cancelation_reason
+    ,num_reason
+    ,sum(num_reason) over (partition by cancel_year) as year_total
+    ,num_reason * 100 / year_total as perc_reason_annual
+from 
+    yearly
