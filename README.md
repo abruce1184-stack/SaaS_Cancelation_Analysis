@@ -80,20 +80,6 @@ Leadership identified an above-average subscriber churn rate resulting in signif
 
 [![Business Impact Model](https://github.com/abruce1184-stack/SaaS_Cancelation_Analysis/raw/main/model.png)](https://github.com/abruce1184-stack/SaaS_Cancelation_Analysis/blob/main/model.png)
 
-| Assumption | Value |
-| --- | --- |
-| Total subscribers | 59 |
-| Churned subscribers (37.3%) | 22 |
-| Monthly subscription price (benchmark) | $100/month |
-| MRR at risk | $2,200/month |
-| ARR at risk | $26,400/year |
-
-| Retention Scenario | Subscribers Retained | Recovered ARR |
-| --- | --- | --- |
-| Recover 10% of churned subscribers | ~2 | ~$2,400 |
-| Recover 20% of churned subscribers | ~4 | ~$4,800 |
-| Recover 30% of churned subscribers | ~7 | ~$8,400 |
-
 ---
 
 ### Next Steps
@@ -101,11 +87,8 @@ Leadership identified an above-average subscriber churn rate resulting in signif
 1. **Onboarding Redesign:** Review training and documentation processes for new subscribers and implement structured onboarding milestones in the first 90 days — including feature adoption checkpoints, proactive check-in touchpoints, and advanced training resources for users who have not engaged with key features.
 2. **Cancelation Rescue Tactic:** Consult with the product team and finance to model what level of promotional discount generates a positive LTV return at current churn rates, and implement a targeted offer in the cancelation workflow for subscribers citing 'Expensive.'
 3. **Competitive Monitoring:** Establish a regular competitive monitoring cadence tracking competitor pricing, features, and positioning — and consider a targeted win-back campaign for subscribers who cited competitors as their reason for leaving.
-4. **Measurement:** Build a live churn rate dashboard to replace ad hoc reporting and enable ongoing monitoring of cancelation trends by reason and cohort.
-5. **Limitations:** The dataset is intentionally small, which limits statistical power of trend analysis. Further data collection and more granular subscriber event tracking would provide deeper insights.
 
 ---
 
-👉 [View the full project write-up on Notion](your-notion-link)
+👉 [View the full project write-up on Notion](https://charming-heat-ae5.notion.site/SaaS-Subscriber-Cancelation-Analysis-0f2b743fecb883c6b97f0163323005dd)
 
-*Part of the [Alicia Bruce Data & Financial Analytics Portfolio](your-notion-portfolio-link)*
