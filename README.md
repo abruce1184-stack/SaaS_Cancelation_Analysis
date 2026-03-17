@@ -1,6 +1,6 @@
-# SaaS Subscriber Cancellation Analysis
+# SaaS Subscriber Cancelation Analysis
 
-SQL-based cancellation analysis in Snowflake identifying the key drivers of a 37.3% SaaS churn rate through cohort analysis, year-over-year trending, and exit survey data — with business impact modeling quantifying the revenue opportunity of targeted retention tactics.
+SQL-based cancelation analysis in Snowflake identifying the key drivers of a 37.3% SaaS churn rate through cohort analysis, year-over-year trending, and exit survey data — with business impact modeling quantifying the revenue opportunity of targeted retention tactics.
 
 ---
 
@@ -17,15 +17,15 @@ SQL-based cancellation analysis in Snowflake identifying the key drivers of a 37
 
 ## The Business Problem
 
-A SaaS company experiencing above-average subscriber churn needed to understand the root causes driving cancellations before launching an enterprise-wide retention campaign. The company collects user-reported cancellation data through a structured three-question exit survey — giving the analytics team direct access to subscriber-stated reasons for leaving.
+A SaaS company experiencing above-average subscriber churn needed to understand the root causes driving cancelations before launching an enterprise-wide retention campaign. The company collects user-reported cancelation data through a structured three-question exit survey — giving the analytics team direct access to subscriber-stated reasons for leaving.
 
 ---
 
 ## Approach
 
-- **Data Generation & Preparation** — Synthetic dataset generated using ChatGPT to simulate realistic SaaS cancellation behavior across multiple subscriber cohorts and exit survey response patterns, loaded into a Snowflake data warehouse
-- **Exploratory Data Analysis (EDA)** — SQL used to explore dataset structure, validate data integrity, and understand descriptive statistics; techniques included multi-table joins, unions, CTEs, and window functions to surface cancellation reason distributions across all three exit survey slots
-- **Cancellation Reason & Churn Analysis** — CASE statements, views, unions, and cohort segmentation applied to understand cancellation drivers, workflow engagement, and churn rates in aggregate, year-over-year, and by subscriber cohort
+- **Data Generation & Preparation** — Synthetic dataset generated using ChatGPT to simulate realistic SaaS cancelation behavior across multiple subscriber cohorts and exit survey response patterns, loaded into a Snowflake data warehouse
+- **Exploratory Data Analysis (EDA)** — SQL used to explore dataset structure, validate data integrity, and understand descriptive statistics; techniques included multi-table joins, unions, CTEs, and window functions to surface cancelation reason distributions across all three exit survey slots
+- **cancelation Reason & Churn Analysis** — CASE statements, views, unions, and cohort segmentation applied to understand cancelation drivers, workflow engagement, and churn rates in aggregate, year-over-year, and by subscriber cohort
 - **Data Visualization** — Findings visualized in HEX Notebook using pie, column, and line charts to communicate current state and year-over-year trends in a decision-ready format
 
 ---
@@ -35,11 +35,11 @@ A SaaS company experiencing above-average subscriber churn needed to understand 
 | Metric | Finding |
 |---|---|
 | Overall churn rate | 37.3% |
-| Top cancellation reason | Not Useful (primary) · Expensive (consistent across all three survey slots) |
+| Top cancelation reason | Not Useful (primary) · Expensive (consistent across all three survey slots) |
 | Competitive threat | Went to a Competitor — #1 secondary reason, tied for #1 overall |
-| Survey engagement | Subscribers averaged 2.18 cancellation reasons — above typical exit survey completion |
+| Survey engagement | Subscribers averaged 2.18 cancelation reasons — above typical exit survey completion |
 | Highest-risk cohort | First-year subscribers churn at the highest rate; risk decreases significantly with tenure |
-| Trending concern | Bad customer service and expense complaints increased year-over-year as % of total cancellations |
+| Trending concern | Bad customer service and expense complaints increased year-over-year as % of total cancelations |
 
 ---
 
@@ -71,44 +71,21 @@ Given that churn risk is highest in the first year, even a modest improvement in
 
 **1. Redesign onboarding to address the 'Not Useful' finding**
 
-The top cancellation reason across all survey slots is that subscribers do not find the product useful — most likely an onboarding and feature adoption issue rather than a product quality problem. Improving first-year onboarding simultaneously addresses the 'Not Useful' driver and the first-year cohort churn finding.
+The top cancelation reason across all survey slots is that subscribers do not find the product useful — most likely an onboarding and feature adoption issue rather than a product quality problem. Improving first-year onboarding simultaneously addresses the 'Not Useful' driver and the first-year cohort churn finding.
 
 > ✅ **Next Step:** Implement structured onboarding milestones in the first 90 days — including feature adoption checkpoints, proactive check-in touchpoints, and advanced training resources for users who have not engaged with key features.
 
-**2. Implement a price-sensitivity rescue tactic in the cancellation workflow**
+**2. Implement a price-sensitivity rescue tactic in the cancelation workflow**
 
-For subscribers citing 'Expensive' as a cancellation reason, a targeted discount or promotional offer at the point of cancellation creates an opportunity to retain price-sensitive subscribers before they fully exit. Given that churn decreases significantly after year one, a short-term discount investment can yield meaningful long-term LTV recovery.
+For subscribers citing 'Expensive' as a cancelation reason, a targeted discount or promotional offer at the point of cancelation creates an opportunity to retain price-sensitive subscribers before they fully exit. Given that churn decreases significantly after year one, a short-term discount investment can yield meaningful long-term LTV recovery.
 
 > ✅ **Next Step:** Consult with the product team and finance to model what level of promotional discount generates a positive LTV return at current churn rates.
 
 **3. Build a competitive monitoring framework**
 
-'Went to a Competitor' is the top secondary cancellation reason and tied for first overall — indicating competitive displacement is a meaningful and growing churn driver.
+'Went to a Competitor' is the top secondary cancelation reason and tied for first overall — indicating competitive displacement is a meaningful and growing churn driver.
 
 > ✅ **Next Step:** Establish a regular competitive monitoring cadence tracking competitor pricing, features, and positioning — and consider a targeted win-back campaign for subscribers who cited competitors as their reason for leaving.
-
----
-
-## Repository Structure
-
-```
-saas-cancellation-analysis/
-├── README.md
-├── data/
-│   └── synthetic_subscribers.csv
-├── sql/
-│   ├── model.sql
-│   ├── churn_pie.sql
-│   ├── reason1.sql
-│   ├── reason2.sql
-│   ├── reason3.sql
-│   ├── total_reason.sql
-│   ├── agg_reason.sql
-│   ├── YoY_reason.sql
-│   └── cohort.sql
-└── outputs/
-    └── screenshots/
-```
 
 ---
 
